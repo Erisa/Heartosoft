@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -43,7 +43,51 @@ namespace ModCore.Commands
 			this.StartTimes = starttimes;
 		}
 
-		[Command("about"), Description("About this bot.")]
+        readonly string[] validExts = { "gif", "png", "jpg", "webp" };
+
+        [Command("avatar"), Aliases("avy")]
+        [Description("Shows the avatar of a user.")]
+        public async Task Avatar(CommandContext ctx, [Description("The user whose avatar will be shown.")] DiscordMember target = null, [Description("The format of the resulting image (jpg, png, gif, webp).")] string format = "png or gif")
+        {
+            if (target == null)
+                target = ctx.Member;
+
+            var hash = target.AvatarHash;
+
+
+            if (format == null || format == "png or gif")
+            {
+                format = hash.StartsWith("a_") ? "gif" : "png";
+            }
+            else if (!validExts.Any(format.Contains))
+            {
+                await ctx.RespondAsync("<:xmark:314349398824058880> You supplied an invalid format, either give none or one of the following: `gif`, `png`, `jpg`, `webp`");
+                return;
+            }
+            else if (format == "gif" && !hash.StartsWith("a_"))
+            {
+                await ctx.RespondAsync("<:xmark:314349398824058880> The format of `gif` only applies to animated avatars.\nThe user you are trying to lookup does not have an animated avatar.");
+                return;
+            }
+
+            string avatarUrl = $"https://cdn.discordapp.com/avatars/{target.Id}/{hash}.{format}?size=4096";
+            var embed = new DiscordEmbedBuilder()
+            .WithColor(new DiscordColor(0xC63B68))
+            .WithTimestamp(DateTime.UtcNow)
+            .WithFooter(
+                $"Called by {ctx.User.Username}#{ctx.User.Discriminator} ({ctx.User.Id})",
+                ctx.User.AvatarUrl
+            )
+            .WithImageUrl(avatarUrl)
+            .WithAuthor(
+                $"Avatar for {target.Username} (Click to open in browser)",
+                avatarUrl
+            );
+
+            await ctx.RespondAsync(null, false, embed);
+        }
+
+        [Command("about"), Description("About this bot.")]
 		public async Task AboutAsync(CommandContext ctx)
 		{
 			var eb = new DiscordEmbedBuilder()
@@ -76,7 +120,11 @@ namespace ModCore.Commands
 		[Command("ping"), Description("Check ModCore's API connection status."), CheckDisable]
 		public async Task PingAsync(CommandContext ctx)
 		{
-			await ctx.SafeRespondAsync($"Pong: ({ctx.Client.Ping}) ms.");
+            DSharpPlus.Entities.DiscordMessage return_message = await ctx.RespondAsync("Pinging...");
+            ulong ping = (return_message.Id - ctx.Message.Id) >> 22;
+            await return_message.ModifyAsync($"h.\n" +
+                $"• Message latency: `{ping}ms`.\n" +
+                $"• Websocket latency: `{ctx.Client.Ping.ToString()}ms`.");
 		}
 
 		[Command("prefix"), Description("Check ModCore's current prefix."), CheckDisable]

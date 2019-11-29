@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -13,6 +14,8 @@ using ModCore.Logic.Extensions;
 
 namespace ModCore.Commands
 {
+
+
     [Group("info"), Aliases("i"), Description("Information commands"), CheckDisable]
     public class Info : BaseCommandModule
 	{
