@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ModCore.Api;
@@ -17,8 +18,9 @@ using ModCore.CoreApi;
 using ModCore.Database;
 using ModCore.Entities;
 using ModCore.Listeners;
+using ModCore.Web;
 using Newtonsoft.Json;
-using Startup = ModCore.CoreApi.Startup;
+using Startup = ModCore.Web.Startup;
 
 namespace ModCore
 {
@@ -143,7 +145,13 @@ namespace ModCore
 			return new HostBuilder()
 				.UseContentRoot(Directory.GetCurrentDirectory())
 				.ConfigureWebHostDefaults(webBuilder => {
-					webBuilder.UseStartup<Startup>()
+                    webBuilder.ConfigureAppConfiguration((hostingContext, config) =>
+                     {
+                         config.AddJsonFile(
+                             "appconfig.json", optional: false, reloadOnChange: false);
+                     });
+
+                    webBuilder.UseStartup<Startup>()
 						.ConfigureServices(x => x.Add(mservice))
 						.UseUrls("http://0.0.0.0:6969");
 				})

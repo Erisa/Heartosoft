@@ -17,6 +17,14 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Web\Pages\include\script.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Web\Pages\include\script.js" />
+    <EmbeddedResource Include="Web\Pages\include\style.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AspNetCoreRateLimit" Version="3.0.5" />
     <PackageReference Include="Chronic-netstandard" Version="0.3.2.4" />
     <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-*" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-*" />
@@ -24,6 +32,7 @@
     <PackageReference Include="DSharpPlus.WebSocket.WebSocket4NetCore" Version="4.0.0-nightly-*" />
     <PackageReference Include="F23.StringSimilarity" Version="3.0.0" />
     <PackageReference Include="Humanizer.Core" Version="2.7.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="2.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,6 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="4.6.0" />
+    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="appconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update="settings.json">
